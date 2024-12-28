@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphique des Mesures</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e0f7fa;
+            text-align: center;
+        }
+        canvas {
+            margin: 50px auto;
+            max-width: 80%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Graphique des Mesures du Capteur</h1>
+
+    <canvas id="sensorChart" width="600" height="400"></canvas>
+
+    <script>
+        // Récupérer les données du serveur pour le graphique
+        fetch('/get_measurements')
+            .then(response => response.json())
+            .then(data => {
+                // Vérification des données dans la console
+                console.log('Données du graphique:', data);
+
+                const labels = data.map(item => item.date_mesure);  // Récupérer les dates
+                const values = data.map(item => item.valeur);  // Récupérer les valeurs
+
+                // Créer le graphique avec Chart.js
+                const ctx = document.getElementById('sensorChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,  // Les dates
+                        datasets: [{
+                            label: 'Mesures du Capteur',
+                            data: values,  // Valeurs de température ou d'humidité
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            fill: false,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date des Mesures'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Valeur'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données du graphique:', error);
+            });
+    </script>
+
+</body>
+</html>
