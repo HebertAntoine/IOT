@@ -1,5 +1,8 @@
 ####################################################################################################################################################
-
+#                                                                                                                                                  #
+#                                                 Partie 1                                                                                         #
+#                                                                                                                                                  #
+####################################################################################################################################################
 
 
 
@@ -33,7 +36,10 @@ puis il va definir les valeurs des mesures et les inserts dans la base de donné
 
 
 
-
+####################################################################################################################################################
+#                                                                                                                                                  #
+#                                                 Partie 2                                                                                         #
+#                                                                                                                                                  #
 ####################################################################################################################################################
 
 
@@ -54,14 +60,53 @@ Exercice 2.3 : Dans cette exercice il y a l'exercice 1 et 2 que 'lon peut voir d
 
 Exercice 2.4 : 
 
+Il faut placer le SSID et password dans les 2 lignes suivante : // Paramètres Wi-Fi
+const char* ssid = 
+const char* password = 
 
+et a la ligne : const char* serverName = il faut mettre l'IP du serveur qui sera donnée au moment ou le serveur sera demarré
+
+Ce code permet à un ESP8266 de se connecter à un réseau Wi-Fi, de lire les données de température et d’humidité à l’aide d’un capteur DHT11, puis d’envoyer ces données sous forme de requête POST en JSON à un serveur Python local via HTTP toutes les 60 secondes. 
+Il utilise la bibliothèque ESP8266WiFi pour la connexion Wi-Fi et ESP8266HTTPClient pour envoyer les données.
 
 
 
 
 
 ####################################################################################################################################################
+#                                                                                                                                                  #
+#                                                 Partie 3                                                                                         #
+#                                                                                                                                                  #
+####################################################################################################################################################
 
 
 
 
+
+
+Il faut placer le SSID et password dans les 2 lignes suivante : // Paramètres Wi-Fi
+const char* ssid = 
+const char* password = 
+
+et a la ligne : const char* serverName = il faut mettre l'IP du serveur qui sera donnée au moment ou le serveur sera demarré
+
+Ce programme permet de gérer des maisons et leurs composants dans une base de données SQLite. Il permet d’afficher et manipuler les maisons (ajout, suppression, détails) ainsi que leurs pièces et capteurs associés via des routes API. 
+De plus, il affiche des prévisions météo à partir de l’API OpenWeatherMap et permet de visualiser les factures liées à chaque maison sous forme graphique. 
+Il comprend aussi des routes pour l’ajout et la suppression de capteurs et de pièces dans une maison.
+Le programme interagie bien avec la base de données et il est capable aussi de mettre a jour les données recu par l'esp pour les afficher sur le graphique du capteur
+dans tempates il y a toutes les pages
+dans static il y a toute les images ou icones
+
+Partie_3
+-- static
+-- templates
+-- -- index.html
+-- -- weather.html
+-- -- home.html
+-- -- house_details.html
+-- -- piece_details.html
+-- -- graphique.html
+-- -- factures.html
+-- logement.db
+-- logement.sql
+-- Site.py
