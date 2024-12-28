@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de la Pièce</title>
+    <style>
+        /* Styles de la page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .back-button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #2e7d32;
+            color: #c8e6c9;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar .buttons-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-button {
+            background-color: white;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        header {
+            margin-top: 80px;
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #388e3c;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .capteurs-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        .capteur-item {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #388e3c;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .capteur-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .capteur-item h3 {
+            color: #388e3c;
+            margin-bottom: 10px;
+        }
+
+        .capteur-item p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .status-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s ease;
+            border: none;
+        }
+
+        .active-button {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .inactive-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .status-button:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        .status-button:hover {
+            opacity: 0.8;
+        }
+
+        .switch {
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        input:checked + .slider {
+            background-color: #388e3c;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #388e3c;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #388e3c;
+        }
+
+        .modal-content select,
+        .modal-content input,
+        .modal-content button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #dcedc8;
+        }
+
+        .modal-content button {
+            background-color: #388e3c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <button onclick="goBack()" class="back-button">←</button>
+        <div class="logo">Détails de la Pièce</div>
+        <div class="buttons-inline">
+            <a href="/" class="menu-button">Accueil</a>
+            <button id="openAddModal" class="menu-button">Ajouter un Capteur</button>
+            <button id="openDeleteModal" class="menu-button">Supprimer un Capteur</button>
+        </div>
+    </div>
+
+    <header>Détails de la Pièce : {{ piece_name }}</header>
+
+    <!-- Liste des capteurs avec état -->
+    <div class="capteurs-list">
+        {% if capteurs %}
+            {% for capteur in capteurs %}
+                <div class="capteur-item">
+                    <a href="/sensor_graph/{{ capteur[0] }}" style="display: block; text-decoration: none;">
+                        <h3>{{ capteur[3] }}</h3>
+                        <p><strong>Date d'installation :</strong> {{ capteur[5] }}</p>
+                        <p><strong>Localisation :</strong> {{ capteur[4] }}</p>
+                        <p><strong>Référence :</strong> {{ capteur[3] }}</p>
+                        <p><strong>Type :</strong> {{ capteur[1] }}</p>
+                        <p><strong>Port de communication :</strong> {{ capteur[2] }}</p>
+                        
+                    <!-- Affichage de l'état du capteur -->
+                        <p><strong>État :</strong> 
+                            {% if capteur[6] == 1 %}
+                                <span style="color: green;">Actif</span>
+                            {% else %}
+                                <span style="color: red;">Inactif</span>
+                            {% endif %}
+                        </p>
+                    </a>
+                    <!-- Boutons pour changer l'état -->
+                    <button class="status-button active-button" onclick="updateEtat({{ capteur[0] }}, 1)">Actif</button>
+                    <button class="status-button inactive-button" onclick="updateEtat({{ capteur[0] }}, 0)">Inactif</button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucun capteur n'est associé à cette pièce.</p>
+        {% endif %}
+    </div>
+
+    <footer>&copy; 2024 - Gestion des Capteurs</footer>
+
+    <!-- Modal pour ajouter un capteur -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Ajouter un Capteur</h2>
+            <form action="/add_sensor/{{ piece_id }}" method="POST">
+                <label for="date_installation">Date d'installation :</label>
+                <input type="date" id="date_installation" name="date_installation" required>
+                <label for="localisation">Localisation :</label>
+                <input type="text" id="localisation" name="localisation" required>
+                <label for="reference">Référence :</label>
+                <input type="text" id="reference" name="reference" required>
+                <label for="type">Type :</label>
+                <input type="text" id="type" name="type" required>
+                <label for="port_com">Port de communication :</label>
+                <input type="text" id="port_com" name="port_com" required>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal pour supprimer un capteur -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Supprimer un Capteur</h2>
+            {% if capteurs %}
+                <form action="/delete_sensor" method="POST">
+                    <input type="hidden" name="piece_id" value="{{ piece_id }}">
+                    <label for="sensor_id">Sélectionnez un capteur :</label>
+                    <select id="sensor_id" name="sensor_id" required>
+                        <option value="" disabled selected>Choisissez un capteur</option>
+                        {% for capteur in capteurs %}
+                            <option value="{{ capteur[0] }}">{{ capteur[3] }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Supprimer</button>
+                </form>
+            {% else %}
+                <p style="color: #555;">Aucun capteur trouvé pour cette pièce.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = "/house/{{ house_id }}";
+        }
+
+        function updateEtat(id, etat) {
+            fetch(`/update_sensor_state/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ etat: etat })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    alert('Erreur lors de la mise à jour de l\'état.');
+                } else {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        }
+        const addModal = document.getElementById("addModal");
+        const deleteModal = document.getElementById("deleteModal");
+
+        document.getElementById("openAddModal").addEventListener("click", () => {
+            addModal.classList.add("active");
+        });
+
+        document.getElementById("openDeleteModal").addEventListener("click", () => {
+            deleteModal.classList.add("active");
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target === addModal) {
+                addModal.classList.remove("active");
+            }
+            if (event.target === deleteModal) {
+                deleteModal.classList.remove("active");
+            }
+        });
+
+        function goBack() {
+            window.location.href = "/house/{{ house_id }}";
+        }
+
+            // Fonction de mise à jour de l'état du capteur
+        function updateEtat(id, etat) {
+            fetch(`/update_sensor_state/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ etat: etat })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    alert('Erreur lors de la mise à jour de l\'état.');
+                } else {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        }
+    </script>
+</body>
+</html>

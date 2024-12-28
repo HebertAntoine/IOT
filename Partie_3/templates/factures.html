@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factures de la Maison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .back-button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #c8e6c9;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar .buttons-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-button {
+            background-color: white;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        .content {
+            margin-top: 80px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header {
+            font-size: 28px;
+            font-weight: bold;
+            color: #388e3c;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #388e3c;
+            color: white;
+            font-size: 16px;
+        }
+
+        td {
+            font-size: 14px;
+            color: #333;
+        }
+
+        td:nth-child(4) {
+            font-weight: bold;
+            color: #388e3c;
+        }
+
+        .chart-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-container {
+            width: 45%;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container canvas {
+            width: 100%;
+            height: 300px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2); 
+            z-index: 1000;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #388e3c;
+        }
+
+        .modal-content select,
+        .modal-content input,
+        .modal-content button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #dcedc8;
+        }
+
+        .modal-content button {
+            background-color: #388e3c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #2e7d32;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <button onclick="window.location.href='/house/{{ house_id }}'" class="back-button">←</button>
+        <div class="logo">Factures</div>
+        <div class="buttons-inline">
+            <a href="/" class="menu-button">Accueil</a>
+            <button id="openAddModal" class="menu-button">Ajouter une Facture</button>
+            <button id="openDeleteModal" class="menu-button">Supprimer une Facture</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <header>Factures de la Maison #{{ house_id }}</header>
+        {% if factures %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Montant (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for facture in factures %}
+                        <tr>
+                            <td>{{ facture['id_facture'] }}</td>
+                            <td>{{ facture['type'] }}</td>
+                            <td>{{ facture['date_facture'] }}</td>
+                            <td>{{ facture['montant'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucune facture disponible pour cette maison.</p>
+        {% endif %}
+
+        <div class="chart-row">
+            <div class="chart-container">
+                <canvas id="waterChart"></canvas>
+                <p>Consommation Eau (€)</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="gasChart"></canvas>
+                <p>Consommation Gaz (€)</p>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <canvas id="electricityChart"></canvas>
+                <p>Consommation Électricité (€)</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="internetChart"></canvas>
+                <p>Consommation Internet (€)</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2024 - Gestion des Factures</footer>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Ajouter une Facture</h2>
+            <form action="/add_facture/{{ house_id }}" method="POST">
+                <input type="text" name="type" placeholder="Type (eau, gaz...)" required>
+                <input type="date" name="date_facture" required>
+                <input type="number" name="montant" placeholder="Montant (€)" required>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Supprimer une Facture</h2>
+            <form action="/delete_facture/{{ house_id }}" method="POST">
+                <select name="id_facture" required>
+                    <option value="" disabled selected>Choisissez une facture</option>
+                    {% for facture in factures %}
+                        <option value="{{ facture['id_facture'] }}">
+                            {{ facture['type'] }} - {{ facture['date_facture'] }} (€{{ facture['montant'] }})
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Supprimer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const addModal = document.getElementById("addModal");
+        const deleteModal = document.getElementById("deleteModal");
+        const openAddModal = document.getElementById("openAddModal");
+        const openDeleteModal = document.getElementById("openDeleteModal");
+
+        openAddModal.addEventListener("click", () => {
+            addModal.classList.add("active");
+        });
+
+        openDeleteModal.addEventListener("click", () => {
+            deleteModal.classList.add("active");
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target === addModal) {
+                addModal.classList.remove("active");
+            } else if (event.target === deleteModal) {
+                deleteModal.classList.remove("active");
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let factures = {{ factures | safe }};
+
+            const extractData = (type) => {
+                const filtered = factures.filter(facture => facture.type.toLowerCase() === type.toLowerCase());
+                filtered.sort((a, b) => new Date(a.date_facture) - new Date(b.date_facture));
+                return {
+                    labels: filtered.map(facture => facture.date_facture),
+                    values: filtered.map(facture => facture.montant),
+                    savings: filtered.map(facture => facture.montant * 0.65)
+                };
+            };
+
+            const waterData = extractData('eau');
+            const gasData = extractData('gaz');
+            const electricityData = extractData('electricité');
+            const internetData = extractData('internet');
+
+            const createChart = (canvasId, label, data, savingsData, color) => {
+                new Chart(document.getElementById(canvasId).getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: label + " Réel",
+                                data: data.values,
+                                borderColor: color,
+                                backgroundColor: color + '33',
+                                borderWidth: 2,
+                                pointBackgroundColor: color,
+                                pointBorderColor: '#fff',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            },
+                            {
+                                label: label + " Économies",
+                                data: savingsData,
+                                borderColor: '#FF6347',
+                                backgroundColor: '#FF634733',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#FF6347',
+                                pointBorderColor: '#fff',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.raw + ' €';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Montant (€)'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            };
+
+            createChart('waterChart', 'Consommation Eau', waterData, waterData.savings, '#2E7D67');
+            createChart('gasChart', 'Consommation Gaz', gasData, gasData.savings, '#FF5733');
+            createChart('electricityChart', 'Consommation Électricité', electricityData, electricityData.savings, '#FFC300');
+            createChart('internetChart', 'Consommation Internet', internetData, internetData.savings, '#3498DB');
+        });
+    </script>
+</body>
+</html>

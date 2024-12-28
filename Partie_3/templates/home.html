@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Maisons</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-button {
+            background-color: white;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #2e7d32;
+            color: white;
+        }
+
+        .back-button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #c8e6c9;
+        }
+
+        .content {
+            margin-top: 80px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .house-card {
+            width: 300px;
+            border: 1px solid #388e3c;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: white;
+            text-align: left;
+        }
+
+        .house-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .house-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .house-card .address {
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #388e3c;
+        }
+
+        footer {
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #388e3c;
+        }
+
+        .modal-content select,
+        .modal-content input,
+        .modal-content button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: 1px solid #dcedc8;
+        }
+
+        .modal-content button {
+            background-color: #388e3c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button onclick="window.location.href='/'" class="back-button">←</button>
+        <h1>Gestion des Logements</h1>
+        <div class="nav-buttons">
+            <a href="/" class="action-button">Accueil</a>
+            <button id="openAddModal" class="action-button">Ajouter une Maison</button>
+            <button id="openDeleteModal" class="action-button">Supprimer une Maison</button>
+        </div>
+    </header>
+
+    <div class="content" id="housesContainer">
+        <!-- Les cartes des maisons seront injectées ici -->
+    </div>
+
+    <footer>&copy; 2024 - Gestion des Logements</footer>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Ajouter une Maison</h2>
+            <form action="/add_house" method="POST" onsubmit="redirectToHome()">
+                <label for="address">Adresse de la maison :</label>
+                <input type="text" id="address" name="address" placeholder="Adresse" required>
+                <label for="phone">Numéro de téléphone :</label>
+                <input type="tel" id="phone" name="phone" placeholder="Téléphone" required>
+                <label for="ip_address">Adresse IP :</label>
+                <input type="text" id="ip_address" name="ip_address" placeholder="Adresse IP" required>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Supprimer une Maison</h2>
+            <form action="/delete_house" method="POST" onsubmit="redirectToHome()">
+                <select id="deleteSelect" name="house_id" required>
+                    <option value="" disabled selected>Choisissez une maison</option>
+                </select>
+                <button type="submit">Supprimer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const addModal = document.getElementById("addModal");
+        const deleteModal = document.getElementById("deleteModal");
+        const deleteSelect = document.getElementById("deleteSelect");
+
+        document.getElementById("openAddModal").addEventListener("click", () => {
+            addModal.classList.add("active");
+        });
+
+        document.getElementById("openDeleteModal").addEventListener("click", () => {
+            deleteModal.classList.add("active");
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target === addModal) addModal.classList.remove("active");
+            if (event.target === deleteModal) deleteModal.classList.remove("active");
+        });
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/houses");
+                const data = await response.json();
+                const container = document.getElementById("housesContainer");
+
+                container.innerHTML = "";
+                deleteSelect.innerHTML = `<option value="" disabled selected>Choisissez une maison</option>`;
+
+                if (data.houses.length > 0) {
+                    data.houses.forEach(house => {
+                        const option = document.createElement("option");
+                        option.value = house.id;
+                        option.textContent = house.address;
+                        deleteSelect.appendChild(option);
+
+                        const card = document.createElement("div");
+                        card.className = "house-card";
+
+                        const link = document.createElement("a");
+                        link.href = `/house/${house.id}`;
+                        link.style = "text-decoration: none; color: inherit;";
+
+                        const img = document.createElement("img");
+                        img.src = "/static/house.jpg";
+                        img.alt = "Maison";
+
+                        const address = document.createElement("div");
+                        address.className = "address";
+                        address.textContent = house.address;
+
+                        card.appendChild(img);
+                        card.appendChild(address);
+                        link.appendChild(card);
+                        container.appendChild(link);
+                    });
+                } else {
+                    container.innerHTML = "<p>Aucune maison disponible</p>";
+                }
+            } catch (error) {
+                console.error("Erreur lors du chargement des maisons :", error);
+                document.getElementById("housesContainer").innerHTML = "<p>Erreur lors du chargement des maisons</p>";
+            }
+        });
+
+        function redirectToHome() {
+            setTimeout(() => {
+                window.location.href = "/home/";
+            }, 100);
+        }
+    </script>
+</body>
+</html>

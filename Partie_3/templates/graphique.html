@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphique des Mesures</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Styles de la page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .back-button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #2e7d32;
+            color: #c8e6c9;
+        }
+
+        header {
+            margin-top: 80px;
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #388e3c;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            margin: 50px auto;
+            max-width: 80%;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #388e3c;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        /* Styles pour les boutons */
+        .menu-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s ease;
+            border: none;
+            background-color: white;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+        }
+
+        .menu-button:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        .active-button {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .inactive-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <button onclick="goBack()" class="back-button">←</button>
+        <div class="logo">Graphique des Mesures</div>
+        <div class="buttons-inline">
+            <!-- Bouton Accueil avec le même design que dans l'autre page -->
+            <a href="/" class="menu-button">Accueil</a>
+        </div>
+    </div>
+
+    <header>Graphique des Mesures du Capteur</header>
+
+    <canvas id="sensorChart" width="600" height="400"></canvas>
+
+    <script>
+        const sensorId = window.location.pathname.split('/').pop(); // Récupère l'ID du capteur depuis l'URL
+
+        fetch(`/get_sensor_data/${sensorId}`)
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => item.date_mesure);  // Récupérer les dates
+                const values = data.map(item => item.valeur);  // Récupérer les valeurs
+
+                const ctx = document.getElementById('sensorChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Mesures du Capteur',
+                            data: values,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            fill: false,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date des Mesures'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Valeur'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des données du graphique:', error);
+            });
+    </script>
+
+    <footer>&copy; 2024 - Gestion des Capteurs</footer>
+
+    <script>
+        function goBack() {
+            window.history.back();  // Retourne à la page précédente
+        }
+    </script>
+
+</body>
+</html>

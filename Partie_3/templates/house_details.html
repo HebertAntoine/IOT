@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de la Maison</title>
+    <style>
+        /* Styles de la page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
+            color: #000000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .back-button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #c8e6c9;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1.2px;
+        }
+
+        .navbar .buttons-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-button {
+            background-color: #ffffff;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background-color: #388e3c;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 80px;
+            height: calc(100vh - 160px);
+        }
+
+        .sidebar {
+            width: 30%;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-right: 2px solid #dcedc8;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h1 {
+            color: #388e3c;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            align-items: flex-start;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .piece-card {
+            width: 320px;
+            height: 420px;
+            border: 1px solid #dcedc8;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .piece-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .piece-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .piece-card .details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .piece-card .details h3 {
+            font-size: 20px;
+            color: #388e3c;
+        }
+
+        .piece-card .details p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer {
+            width: 100%;
+            background-color: #388e3c;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #388e3c;
+        }
+
+        .modal-content select,
+        .modal-content button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #dcedc8;
+        }
+
+        .modal-content button {
+            background-color: #388e3c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #2e7d32;
+        }
+        .facture-button {
+            display: block;
+            text-align: center;
+            margin-top: 30px; /* Augmenté pour le descendre davantage */
+            background-color: #ffffff;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .facture-button:hover {
+            background-color: #388e3c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <button onclick="window.location.href='/home'" class="back-button">←</button>
+        <div class="logo">Gestion des Maisons</div>
+        <div class="buttons-inline">
+            <a href="/" class="menu-button">Accueil</a>
+            <button id="openAddModal" class="menu-button">Ajouter une Pièce</button>
+            <button id="openDeleteModal" class="menu-button">Supprimer une Pièce</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h1>Détails de la Maison</h1>
+            <p><strong>Adresse :</strong> {{ address }}</p>
+            <p><strong>Numéro de Téléphone :</strong> {{ phone }}</p>
+            <p><strong>Adresse IP :</strong> {{ ip_address }}</p>
+            <a href="/factures/{{ house_id }}" class="facture-button">Voir les Factures</a>
+        
+        </div>
+
+        <div class="main-content">
+            {% if pieces %}
+                {% for piece in pieces %}
+                    <a href="/piece/{{ piece[0] }}" class="piece-card">
+                        <!-- Générer le nom de l'image avec des exceptions spécifiques -->
+                        {% set image_name = piece[1].split(' ')[0]|lower %}
+                        {% if 'salle à manger' in piece[1]|lower %}
+                            {% set image_name = 'table_a_manger' %}
+                        {% elif 'salle de bain' in piece[1]|lower %}
+                            {% set image_name = 'salle_de_bain' %}
+                        {% else %}
+                            {% set image_name = image_name|replace(' ', '_')|replace('à', 'a')|replace('é', 'e')|replace('è', 'e') %}
+                        {% endif %}
+                        <img src="/static/{{ image_name }}.jpg" alt="{{ piece[1] }}">
+                        <div class="details">
+                            <h3>{{ piece[1] }}</h3>
+                            <p>Type : {{ piece[1] }}</p>
+                            <p>Localisation : {{ piece[2] if piece[2] else 'Non spécifiée' }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p>Aucune pièce disponible pour cette maison.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 - Gestion des Pieces</p>
+    </footer>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Ajouter une Pièce</h2>
+            <form action="/add_piece/{{ house_id }}" method="POST">
+                <label for="room_type">Sélectionnez le type de pièce :</label>
+                <select id="room_type" name="room_type" required>
+                    <option value="" disabled selected>Choisissez un type de pièce</option>
+                    <option value="Salon">Salon</option>
+                    <option value="Salle à manger">Salle à manger</option>
+                    <option value="Cuisine">Cuisine</option>
+                    <option value="Chambre">Chambre</option>
+                    <option value="Salle de bain">Salle de bain</option>
+                    <option value="Bureau">Bureau</option>
+                </select>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+    </div>
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h2>Supprimer une Pièce</h2>
+            <form action="/delete_piece/{{ house_id }}" method="POST">
+                <label for="piece_id">Sélectionnez une pièce :</label>
+                <select id="piece_id" name="piece_id" required>
+                    <option value="" disabled selected>Choisissez une pièce</option>
+                    {% for piece in pieces %}
+                        <option value="{{ piece[0] }}">{{ piece[1] }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Supprimer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const addModal = document.getElementById("addModal");
+        const deleteModal = document.getElementById("deleteModal");
+
+        document.getElementById("openAddModal").addEventListener("click", () => {
+            addModal.classList.add("active");
+        });
+
+        document.getElementById("openDeleteModal").addEventListener("click", () => {
+            deleteModal.classList.add("active");
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target === addModal) addModal.classList.remove("active");
+            if (event.target === deleteModal) deleteModal.classList.remove("active");
+        });
+    </script>
+</body>
+</html>
