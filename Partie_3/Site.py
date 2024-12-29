@@ -19,10 +19,10 @@ VILLE = "Paris,FR"
 # myenv\Scripts\activate
 #
 
-# Helper function to connect to the database
+# connection a la database
 def get_db_connection():
     conn = sqlite3.connect("logement.db")
-    conn.row_factory = sqlite3.Row  # To access columns by name
+    conn.row_factory = sqlite3.Row
     return conn
 
 def format_date(date_str):
@@ -156,7 +156,7 @@ def piece_details(piece_id):
         if not piece:
             return "Pièce introuvable.", 404
 
-        house_id = piece["id_maison"]  # Récupérer l'ID de la maison associée
+        house_id = piece["id_maison"]
 
         # Récupérer les capteurs associés
         cursor.execute("""
@@ -309,38 +309,6 @@ def room_details(piece_id):
     # Rendre le template avec les capteurs
     return render_template('room_details.html', capteurs=capteurs, piece_id=piece_id)
 
-# Route pour supprimer un capteur
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Route pour afficher la page de suppression d'un capteur
 # Route pour afficher la page de suppression d'un capteur
 @app.route("/delete_sensor/<int:piece_id>")
 def delete_sensor_page(piece_id):
@@ -379,11 +347,6 @@ def delete_sensor():
     except Exception as e:
         return f"Erreur lors de la suppression : {str(e)}", 500
 
-
-
-
-
-
 @app.route('/update_sensor_state/<int:id>', methods=['POST'])
 def update_sensor_state(id):
     try:
@@ -402,10 +365,9 @@ def update_sensor_state(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 def get_db():
-    conn = sqlite3.connect('logement.db')  # Assurez-vous que le chemin vers votre base de données est correct
-    conn.row_factory = sqlite3.Row  # Cela permet de récupérer les résultats sous forme de dictionnaire
+    conn = sqlite3.connect('logement.db')
+    conn.row_factory = sqlite3.Row
     return conn
 
 @app.route('/sensor_graph/<int:sensor_id>', methods=['GET'])
@@ -434,23 +396,6 @@ def get_sensor_data(sensor_id):
     except Exception as e:
         print(f"Erreur lors de la récupération des données : {str(e)}")
         return jsonify({"error": "Erreur lors de la récupération des données"}), 500
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Fonction pour insérer une mesure dans la table Mesures
@@ -493,9 +438,6 @@ def handle_temperature():
             # Insérer la température dans la base de données
             insert_measurement(temperature, id_capteur)
             
-            # Insérer l'humidité dans la base de données (si nécessaire)
-            # insert_measurement(humidity, id_capteur)
-            
             # Répondre avec un message de succès
             return jsonify({"message": "Données reçues avec succès!"}), 200
         else:
@@ -505,31 +447,6 @@ def handle_temperature():
         # Afficher l'erreur si elle se produit
         print(f"Erreur : {str(e)}")
         return jsonify({"error": str(e)}), 500
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
 
 # API pour récupérer les factures
 @app.route("/factures/<int:house_id>")
@@ -677,8 +594,6 @@ def aggregate_by_month(factures):
     labels = [item[0] for item in sorted_aggregation]
     data_points = [item[1] for item in sorted_aggregation]
     return labels, data_points
-
-
 
 
 # Route pour afficher la météo avec des icônes personnalisées
