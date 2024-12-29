@@ -60,7 +60,9 @@ Exercice 2.3 : Dans cette exercice il y a l'exercice 1 et 2 que 'lon peut voir d
 
 Exercice 2.4 : 
 
-Il faut placer le SSID et password dans les 2 lignes suivante : // Paramètres Wi-Fi
+Il ce trouve dans IOT4
+
+dans le fichier IOT4.ino : Il faut placer le SSID et password dans les 2 lignes suivante : // Paramètres Wi-Fi
 const char* ssid = 
 const char* password = 
 
@@ -69,6 +71,7 @@ et a la ligne : const char* serverName = il faut mettre l'IP du serveur qui sera
 Ce code permet à un ESP8266 de se connecter à un réseau Wi-Fi, de lire les données de température et d’humidité à l’aide d’un capteur DHT11, puis d’envoyer ces données sous forme de requête POST en JSON à un serveur Python local via HTTP toutes les 60 secondes. 
 Il utilise la bibliothèque ESP8266WiFi pour la connexion Wi-Fi et ESP8266HTTPClient pour envoyer les données.
 
+Il faut lancer serveur.py
 
 
 
