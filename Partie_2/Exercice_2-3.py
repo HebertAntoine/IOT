@@ -14,9 +14,9 @@ import sqlite3
 app = FastAPI()
 
 # Clé API pour OpenWeatherMap
-API_KEY = "623e5d8d1ee9b74bfa3dfb184717a49f"  # Remplacez par votre clé API
+API_KEY = "623e5d8d1ee9b74bfa3dfb184717a49f"
 BASE_URL = "http://api.openweathermap.org/data/2.5/forecast"
-VILLE = "Paris,FR"  # Paris comme ville fixe
+VILLE = "Paris,FR"  # Paris
 
 # Fonction pour établir une connexion à la base de données SQLite
 def get_db_connection():
@@ -54,8 +54,8 @@ async def meteo_5_jours():
         params = {
             "q": VILLE,
             "appid": API_KEY,
-            "units": "metric",  # Températures en Celsius
-            "cnt": 40,          # Nombre d'entrées horaires (8 par jour pour 5 jours)
+            "units": "metric",
+            "cnt": 40,
         }
         # Faire la requête à l'API météo
         response = requests.get(BASE_URL, params=params)
@@ -81,7 +81,7 @@ async def meteo_5_jours():
 
         # Calculer la température moyenne pour chaque jour
         for day, data in day_temps.items():
-            avg_temp = round(sum(data["temps"]) / len(data["temps"]), 2)  # Moyenne des températures horaires
+            avg_temp = round(sum(data["temps"]) / len(data["temps"]), 2)  # Moyenne des températures
             previsions.append({
                 "date": day,
                 "temperature": avg_temp,
