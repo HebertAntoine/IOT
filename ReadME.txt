@@ -8,6 +8,9 @@
 
 Dans le fichier Partie_1 il y a tout ce qui concernet la Base de données question de 1 à 8 dans logement.sql et la 1.2 dans remplissage.py
 
+la question 1 l'image est a la racine du github appelé : IMG_0675.jpeg
+
+
 la Question 2 entre les lignes 1-8
 - Suppression des tables existantes avec DROP TABLE IF EXISTS { nom de la table }
 
